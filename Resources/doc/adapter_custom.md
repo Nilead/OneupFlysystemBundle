@@ -1,18 +1,17 @@
-# Use a custom adapter
+# Use the Custom adapter
 
-In order to add a custom adapter, you need to provide a factory class to parse/validate your adapter's configs.
+In order to use a custom adapter, you first need to create
+a service implementing the `League\Flysystem\AdapterInterface`.
+
+Set this service as the value of the `service` key in the `oneup_flysystem` configuration.
 
 ```yml
 oneup_flysystem:
     adapters:
-        custom_adapter:
-            custom_adapter_name: #this value should match the key defined in the factory class
-                factory: FullyQualified\FactoryClass\Path #or a @serviceId (note the prefix @)
-                some_custom_config_1: ~
-                some_custom_config_2: ~
+        acme.flysystem_adapter:
+            custom:
+                service: my_flysystem_service
 ```
-
-For more info regarding the FactoryClass, please refer to OneupFlysystem's adapter factory classes located in DependencyInjection/Factory/Adapter
 
 ## More to know
 * [Create and use your filesystem](filesystem_create.md)
