@@ -8,19 +8,18 @@ use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 use Oneup\FlysystemBundle\DependencyInjection\Factory\AdapterFactoryInterface;
 
-class CopyFactory implements AdapterFactoryInterface
+class GaufretteFactory implements AdapterFactoryInterface
 {
     public function getKey()
     {
-        return 'copy';
+        return 'gaufrette';
     }
 
     public function create(ContainerBuilder $container, $id, array $config)
     {
         $definition = $container
-            ->setDefinition($id, new DefinitionDecorator('oneup_flysystem.adapter.copy'))
-            ->replaceArgument(0, new Reference($config['client']))
-            ->replaceArgument(1, $config['prefix'])
+            ->setDefinition($id, new DefinitionDecorator('oneup_flysystem.adapter.gaufrette'))
+            ->replaceArgument(0, new Reference($config['adapter']))
         ;
     }
 
@@ -28,8 +27,7 @@ class CopyFactory implements AdapterFactoryInterface
     {
         $node
             ->children()
-                ->scalarNode('client')->isRequired()->end()
-                ->scalarNode('prefix')->defaultNull()->end()
+                ->scalarNode('adapter')->isRequired()->cannotBeEmpty()->end()
             ->end()
         ;
     }

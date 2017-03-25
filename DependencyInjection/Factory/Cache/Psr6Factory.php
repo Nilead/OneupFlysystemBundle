@@ -8,18 +8,18 @@ use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 use Oneup\FlysystemBundle\DependencyInjection\Factory\CacheFactoryInterface;
 
-class PhpRedisFactory implements CacheFactoryInterface
+class Psr6Factory implements CacheFactoryInterface
 {
     public function getKey()
     {
-        return 'php_redis';
+        return 'psr6';
     }
 
     public function create(ContainerBuilder $container, $id, array $config)
     {
         $container
-            ->setDefinition($id, new DefinitionDecorator('oneup_flysystem.cache.php_redis'))
-            ->replaceArgument(0, new Reference($config['client']))
+            ->setDefinition($id, new DefinitionDecorator('oneup_flysystem.cache.psr6'))
+            ->replaceArgument(0, new Reference($config['service']))
             ->replaceArgument(1, $config['key'])
             ->replaceArgument(2, $config['expires'])
         ;
@@ -29,9 +29,9 @@ class PhpRedisFactory implements CacheFactoryInterface
     {
         $node
             ->children()
-            ->scalarNode('client')->isRequired()->end()
-            ->scalarNode('key')->defaultValue('flysystem')->end()
-            ->scalarNode('expires')->defaultNull()->end()
+                ->scalarNode('service')->isRequired()->end()
+                ->scalarNode('key')->defaultValue('flysystem')->end()
+                ->scalarNode('expires')->defaultNull()->end()
             ->end()
         ;
     }
