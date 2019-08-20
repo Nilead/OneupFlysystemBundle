@@ -8,21 +8,20 @@ use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\Reference;
 use Oneup\FlysystemBundle\DependencyInjection\Factory\AdapterFactoryInterface;
 
-class AwsS3V3Factory implements AdapterFactoryInterface
+class FallbackFactory implements AdapterFactoryInterface
 {
     public function getKey()
     {
-        return 'awss3v3';
+        return 'fallback';
     }
 
     public function create(ContainerBuilder $container, $id, array $config)
     {
         $definition = $container
-            ->setDefinition($id, new ChildDefinition('oneup_flysystem.adapter.awss3v3'))
-            ->replaceArgument(0, new Reference($config['client']))
-            ->replaceArgument(1, $config['bucket'])
-            ->replaceArgument(2, $config['prefix'])
-            ->addArgument((array) $config['options'])
+            ->setDefinition($id, new ChildDefinition('oneup_flysystem.adapter.fallback'))
+            ->replaceArgument(0, new Reference(sprintf('oneup_flysystem.%s_adapter', $config['mainAdapter'])))
+            ->replaceArgument(1, new Reference(sprintf('oneup_flysystem.%s_adapter', $config['fallback'])))
+            ->replaceArgument(2, $config['forceCopyOnMain'])
         ;
     }
 
@@ -30,10 +29,9 @@ class AwsS3V3Factory implements AdapterFactoryInterface
     {
         $node
             ->children()
-                ->scalarNode('client')->isRequired()->end()
-                ->scalarNode('bucket')->isRequired()->end()
-                ->scalarNode('prefix')->defaultNull()->end()
-                ->arrayNode('options')->prototype('scalar')->end()
+                ->scalarNode('mainAdapter')->isRequired()->cannotBeEmpty()->end()
+                ->scalarNode('fallback')->isRequired()->cannotBeEmpty()->end()
+                ->scalarNode('forceCopyOnMain')->defaultFalse()->end()
             ->end()
         ;
     }

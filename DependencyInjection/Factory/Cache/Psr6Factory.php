@@ -8,18 +8,18 @@ use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\Reference;
 use Oneup\FlysystemBundle\DependencyInjection\Factory\CacheFactoryInterface;
 
-class StashFactory implements CacheFactoryInterface
+class Psr6Factory implements CacheFactoryInterface
 {
     public function getKey()
     {
-        return 'stash';
+        return 'psr6';
     }
 
     public function create(ContainerBuilder $container, $id, array $config)
     {
         $container
-            ->setDefinition($id, new ChildDefinition('oneup_flysystem.cache.stash'))
-            ->replaceArgument(0, new Reference($config['pool']))
+            ->setDefinition($id, new ChildDefinition('oneup_flysystem.cache.psr6'))
+            ->replaceArgument(0, new Reference($config['service']))
             ->replaceArgument(1, $config['key'])
             ->replaceArgument(2, $config['expires'])
         ;
@@ -29,9 +29,9 @@ class StashFactory implements CacheFactoryInterface
     {
         $node
             ->children()
-                ->scalarNode('pool')->isRequired()->end()
+                ->scalarNode('service')->isRequired()->end()
                 ->scalarNode('key')->defaultValue('flysystem')->end()
-                ->scalarNode('expires')->defaultValue(300)->end()
+                ->scalarNode('expires')->defaultNull()->end()
             ->end()
         ;
     }

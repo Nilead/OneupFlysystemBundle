@@ -8,21 +8,18 @@ use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\Reference;
 use Oneup\FlysystemBundle\DependencyInjection\Factory\AdapterFactoryInterface;
 
-class AwsS3V3Factory implements AdapterFactoryInterface
+class GaufretteFactory implements AdapterFactoryInterface
 {
     public function getKey()
     {
-        return 'awss3v3';
+        return 'gaufrette';
     }
 
     public function create(ContainerBuilder $container, $id, array $config)
     {
         $definition = $container
-            ->setDefinition($id, new ChildDefinition('oneup_flysystem.adapter.awss3v3'))
-            ->replaceArgument(0, new Reference($config['client']))
-            ->replaceArgument(1, $config['bucket'])
-            ->replaceArgument(2, $config['prefix'])
-            ->addArgument((array) $config['options'])
+            ->setDefinition($id, new ChildDefinition('oneup_flysystem.adapter.gaufrette'))
+            ->replaceArgument(0, new Reference($config['adapter']))
         ;
     }
 
@@ -30,10 +27,7 @@ class AwsS3V3Factory implements AdapterFactoryInterface
     {
         $node
             ->children()
-                ->scalarNode('client')->isRequired()->end()
-                ->scalarNode('bucket')->isRequired()->end()
-                ->scalarNode('prefix')->defaultNull()->end()
-                ->arrayNode('options')->prototype('scalar')->end()
+                ->scalarNode('adapter')->isRequired()->cannotBeEmpty()->end()
             ->end()
         ;
     }

@@ -4,14 +4,16 @@ OneupFlysystemBundle
 The OneupFlysystemBundle provides a [Flysystem](https://github.com/thephpleague/flysystem) integration for your Symfony projects. Flysystem is a filesystem abstraction which allows you to easily swap out a local filesystem for a remote one. Currently you can configure the following adapters to use in your Symfony project.
 
 * [AwsS3](http://aws.amazon.com/de/sdkforphp/)
-* [Dropbox](https://www.dropbox.com/developers/core/sdks/php)
+* [Dropbox](https://www.dropbox.com/developers)
 * [Ftp](http://php.net/manual/en/book.ftp.php)
+* [Google Cloud Storage](https://cloud.google.com/storage/)
 * [Local filesystem](http://php.net/manual/en/ref.filesystem.php)
 * [Rackspace](http://developer.rackspace.com/)
 * [Sftp](http://phpseclib.sourceforge.net/sftp/intro.html)
 * [WebDav](https://github.com/fruux/sabre-dav)
 * [ZipArchive](http://php.net/manual/en/class.ziparchive.php)
 * [GridFS](http://php.net/manual/en/mongo.gridfs.php)
+* [Gaufrette](http://knplabs.github.io/Gaufrette/)
 
 [![Build Status](https://travis-ci.org/1up-lab/OneupFlysystemBundle.png)](https://travis-ci.org/1up-lab/OneupFlysystemBundle)
 [![Total Downloads](https://poser.pugx.org/oneup/flysystem-bundle/d/total.png)](https://packagist.org/packages/oneup/flysystem-bundle)
@@ -21,7 +23,7 @@ Documentation
 
 The entry point of the documentation can be found in the file `Resources/docs/index.md`
 
-[Read the documentation for master](https://github.com/1up-lab/OneupFlysystemBundle/blob/master/Resources/doc/index.md)
+[Read the documentation for master](Resources/doc/index.md)
 
 
 License

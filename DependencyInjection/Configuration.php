@@ -20,8 +20,14 @@ class Configuration implements ConfigurationInterface
 
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('oneup_flysystem');
+        $treeBuilder = new TreeBuilder('oneup_flysystem');
+
+        if (method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            // BC layer for symfony/config 4.1 and older
+            $rootNode = $treeBuilder->root('oneup_flysystem');
+        }
 
         $this->addCacheSection($rootNode);
         $this->addAdapterSection($rootNode);
@@ -86,11 +92,53 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('name')
                     ->prototype('array')
                     ->children()
+                        ->booleanNode('disable_asserts')
+                            ->defaultFalse()
+                        ->end()
                         ->arrayNode('plugins')->treatNullLike(array())->prototype('scalar')->end()->end()
                         ->scalarNode('adapter')->isRequired()->end()
                         ->scalarNode('cache')->defaultNull()->end()
                         ->scalarNode('alias')->defaultNull()->end()
                         ->scalarNode('mount')->defaultNull()->end()
+                        ->arrayNode('stream_wrapper')
+                            ->beforeNormalization()
+                                ->ifString()->then(function ($protocol) {
+                                    return ['protocol' => $protocol];
+                                })
+                            ->end()
+                            ->children()
+                                ->scalarNode('protocol')->isRequired()->end()
+                                ->arrayNode('configuration')
+                                    ->children()
+                                        ->arrayNode('permissions')
+                                            ->isRequired()
+                                            ->children()
+                                                ->arrayNode('dir')
+                                                    ->isRequired()
+                                                    ->children()
+                                                        ->integerNode('private')->isRequired()->end()
+                                                        ->integerNode('public')->isRequired()->end()
+                                                    ->end()
+                                                ->end()
+                                                ->arrayNode('file')
+                                                    ->isRequired()
+                                                    ->children()
+                                                        ->integerNode('private')->isRequired()->end()
+                                                        ->integerNode('public')->isRequired()->end()
+                                                    ->end()
+                                                ->end()
+                                            ->end()
+                                        ->end()
+                                        ->arrayNode('metadata')
+                                            ->isRequired()
+                                            ->requiresAtLeastOneElement()
+                                            ->prototype('scalar')->cannotBeEmpty()->end()
+                                        ->end()
+                                        ->integerNode('public_mask')->isRequired()->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
                         ->scalarNode('visibility')
                             ->validate()
                             ->ifNotInArray($supportedVisibilities)

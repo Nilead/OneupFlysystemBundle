@@ -25,6 +25,8 @@ oneup_flysystem:
         myfilesystem:
             adapter: myadapter
             cache:   mycache
+            stream_wrapper:
+                protocol: myfilesystem
             mount:   prefix
             plugins:
                 - local_plugin
@@ -34,6 +36,7 @@ oneup_flysystem:
             adapter: myadapter
             cache:   mycache
             visibility: public
+            disable_asserts: true
             plugins:
                 - global_plugin
                 - multiple_plugin

@@ -4,7 +4,7 @@ namespace Oneup\FlysystemBundle\DependencyInjection\Factory\Adapter;
 
 use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\DependencyInjection\ChildDefinition;
 use Oneup\FlysystemBundle\DependencyInjection\Factory\AdapterFactoryInterface;
 
 class FtpFactory implements AdapterFactoryInterface
@@ -17,7 +17,7 @@ class FtpFactory implements AdapterFactoryInterface
     public function create(ContainerBuilder $container, $id, array $config)
     {
         $definition = $container
-            ->setDefinition($id, new DefinitionDecorator('oneup_flysystem.adapter.ftp'))
+            ->setDefinition($id, new ChildDefinition('oneup_flysystem.adapter.ftp'))
             ->replaceArgument(0, $config)
         ;
     }
@@ -37,6 +37,10 @@ class FtpFactory implements AdapterFactoryInterface
                 ->scalarNode('permPrivate')->defaultValue(0000)->end()
                 ->scalarNode('permPublic')->defaultNull(0744)->end()
                 ->booleanNode('passive')->defaultTrue()->end()
+                ->scalarNode('transferMode')->defaultValue(defined('FTP_BINARY') ? FTP_BINARY : null)->end()
+                ->scalarNode('systemType')->defaultNull()->end()
+                ->booleanNode('ignorePassiveAddress')->defaultNull()->end()
+                ->booleanNode('recurseManually')->defaultFalse()->end()
             ->end()
         ;
     }
